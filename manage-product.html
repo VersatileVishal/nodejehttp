@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body onload="loadDocNext()"> 
+     <a href="#" id="aAddProduct">Add New Product</a>
+    <!-- <a href="#" id="show">Show</a> -->
+     <h2>Enter Product Details</h2>
+
+      <input type="text" id="name"><br>
+      <textarea name="desc" id="desc" row="10" col="30"></textarea><br>
+      <input type="text" id="price"><br>
+      <input type="text" id="qty"><br>
+      <button onclick="addProduct()">Submit</button>
+
+
+     <div id="divAddProduct">
+     </div>
+     <br>
+     <br><br>
+     <div>
+         <h3>List Of Products</h3>
+    </div>
+    <div id="divListProduct"></div>
+  </body>
+
+<script src="script.js" type="text/javas2cript"></script>
+<script>
+
+
+
+
+var xhttp = new XMLHttpRequest(); // Initialize the HTTP request.
+
+xhttp.onreadystatechange=function() 
+{
+
+    if (xhttp.readyState == 4 && xhttp.status == 200) 
+    {
+
+      let users = JSON.parse(xhttp.responseText);
+      console.log(users);
+
+      if(Array.isArray( users)  && users.length )
+      {
+        users.forEach(function(user)
+                      {
+                          let mainDiv = document.getElementById("divListProduct"); 
+                          let textNode = document.createTextNode(" Name : "+ user.Name+" Desc: "+user.Desc+" Price: "+user.Price+" Qty: "+user.Quantity);         // Create a text node
+                          let br = document.createElement("br");
+
+                          mainDiv.appendChild(textNode);
+                          mainDiv.appendChild(br);
+                      });         
+      }
+          
+    }
+    else
+    {
+       console.log(xhttp.status) ;
+    }
+
+  };
+  function addProduct() {
+  var name = document.getElementById("name");
+  var desc = document.getElementById("desc");
+  var price = document.getElementById("price");
+  var qty = document.getElementById("qty");
+  xhttp.open("POST", "http://localhost:8000/addProduct");
+  xhttp.setRequestHeader("Content-Type", "application/json");
+  xhttp.send(JSON.stringify({Name: name.value , Desc: desc.value,Price:price.value,Quantity:qty.value}));
+  location.reload();
+}  
+function loadDocNext() 
+{
+  xhttp.open("GET", "http://localhost:8000/order");
+  xhttp.send();
+}
+
+
+
+
+</script>
+
+
+</html>
